@@ -6,6 +6,7 @@ import com.example.neube.smartdrive.core.ext.toPositiveInt
 import com.google.android.things.pio.I2cDevice
 import com.google.android.things.pio.PeripheralManager;
 import java.io.File
+import java.io.IOException
 
 class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
 
@@ -34,47 +35,41 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
         private const val SmartDrive_SPEED_M2  =  0x4E
 
         // Supported I2C commands
-        private const val R = 0x52
-        private const val S = 0x53
-        private const val a = 0x61
-        private const val b = 0x62
-        private const val c = 0x63
-        private const val A = 0x41
-        private const val B = 0x42
-        private const val C = 0x43
+        private const val CMD_R = 0x52
+        private const val CMD_S = 0x53
+        private const val CMD_a = 0x61
+        private const val CMD_b = 0x62
+        private const val CMD_c = 0x63
+        private const val CMD_A = 0x41
+        private const val CMD_B = 0x42
+        private const val CMD_C = 0x43
     }
 
     enum class MotorNumber(val i2cValue: Int) {
         One(40), Two(90), Both(110);
 
         companion object {
-            fun fromValue(i2cValue: Int) = MotorNumber.values().firstOrNull { it.i2cValue == i2cValue } ?: Both
+            fun fromValue(i2cValue: Int) = MotorNumber.values().firstOrNull { it.i2cValue == i2cValue } ?: Two
         }
     }
 
-//    enum class Direction(val i2cValue: Int) {
-//        Right(40), Left(90), Stopm(110);
-//
-//        companion object {
-//            fun fromValue(i2cValue: Int) = Direction.values().firstOrNull { it.i2cValue == i2cValue } ?: Right
-//        }
-//    }
+    enum class Direction(val i2cValue: Int) {
+        Right(40), Left(90), Stopm(110);
+
+        companion object {
+            fun fromValue(i2cValue: Int) = Direction.values().firstOrNull { it.i2cValue == i2cValue } ?: Right
+        }
+    }
 
     private var device: I2cDevice? = null
 
     init {
      //   I2cDevice device = PeripheralManager.getInstance().openI2cDevice(i2cName, i2cAddress)
-        val device = PeripheralManager.getInstance().openI2cDevice(i2cName, i2cAddress)
+    //    val device = PeripheralManager.getInstance().openI2cDevice(i2cName, i2cAddress)
+
+        device = PeripheralManager.getInstance().openI2cDevice(i2cName, i2cAddress)
 
     }
-
-//    init {
-//        device = PeripheralManager.getInstance().openI2cDevice(i2cName, i2cAddress)
-//    }
-
-//    init {
-//        device = PeripheralManagerService().openI2cDevice(i2cName, i2cAddress)
-//    }
 
     var motornumber: MotorNumber
 
@@ -82,39 +77,26 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
 
     set(value) {
 
-//        device?.writeRegByte(COMMAND_SPEED, value.i2cValue.toByte())
-
-   //     var value1: Any = byte[] buffer = COMMAND_SPEED, Direction, 0x05, 0x00, 0xD1
-
-
-   //     val allBytes = ByteArray(fileSize.toInt())
-
-     //   pio i2c I2C1 0x1B write-raw  0x46 128  0x05 0x00 0xD1
-
-
-//        device.write (buffer, buffer.length);
-        val buffer = byteArrayOf(0x46, 128.toByte(), 0x05, 0x00, 0xD1.toByte())
+        val buffer = byteArrayOf(0x4E, 128.toByte(), 0x05, 0x00, 0xD1.toByte())
 
         device?.write(buffer, buffer.size)
 
- //       device?.write(new byte[]( COMMAND_SPEED, Direction, 0x05, 0x00, 0xD1, value.i2cValue.toByteArray()
+     }
 
-    }
+    var direction: Direction
 
-//    var direction: Direction
-//
-//        get() = Direction.fromValue(device?.readRegByte(COMMAND_SPEED)?.toPositiveInt() ?: 0)
-//
-//        set(value) {
-//
-//            device?.writeRegByte(COMMAND_SPEED, value.i2cValue.toByte())
-//        }
+        get() = Direction.fromValue(device?.readRegByte(COMMAND_SPEED)?.toPositiveInt() ?: 0)
+
+        set(value) {
+
+            device?.writeRegByte(COMMAND_SPEED, value.i2cValue.toByte())
+        }
 
     override fun close() {
         device?.close().also { device = null }
     }
 
-    fun start() = device?.writeRegByte(COMMAND_ON_OFF, VALUE_ON)
+    fun start() = device?.writeRegByte(SmartDrive_COMMAND, CMD_S.toByte())
 
     fun stop() = device?.writeRegByte(COMMAND_ON_OFF, VALUE_OFF)
 

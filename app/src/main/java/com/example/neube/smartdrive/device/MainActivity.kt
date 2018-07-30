@@ -6,9 +6,8 @@ import android.util.Log
 import com.example.neube.smartdrive.device.components.SmartDriveDriver
 import com.example.neube.smartdrive.device.components.SmartDriveDriver.MotorNumber
 import com.google.android.things.pio.PeripheralManager
-import com.google.android.things.pio.I2cDevice;
-import java.io.IOException
-import android.content.ContentValues.TAG
+import com.example.neube.smartdrive.core.ext.scanI2cAvailableAddresses
+import java.util.*
 
 class MainActivity : Activity() {
 
@@ -28,22 +27,9 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        scanI2cDevices()
         fan = SmartDriveDriver(I2C_PIN_NAME, I2C_ADDRESS_SMARTDRIVE)
 
-//        val manager = PeripheralManager.getInstance()
-//        val deviceList = manager.getI2cBusList()
-//        if (deviceList.isEmpty()) {
-//            Log.i(TAG, "No I2C bus available on this device.")
-//        } else {
-//            Log.i(TAG, "List of available devices: " + deviceList)
-//        }
-//
-//        try {
-//            val manager = PeripheralManager.getInstance()
-//            mDevice = manager.openI2cDevice(I2C_PIN_NAME, I2C_ADDRESS_SMARTDRIVE)
-//        } catch (e: IOException) {
-//            Log.w(TAG, "Unable to access I2C device", e)
-//        }
     }
 
     override fun onResume() {
@@ -51,26 +37,26 @@ class MainActivity : Activity() {
 
         fan?.let { fan ->
             fan.start()
-            fan.motornumber = MotorNumber.One
+            fan.motornumber.direction  = MotorNumber.Two.Direction.Right
             Log.i(TAG, "Speed: ${fan.motornumber}")
-            Thread.sleep(5000)
-          fan.stop()
+            wait1sec()
+      //     fan.stop()
         }
+
+        fan!!.stop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         fan?.close().also { fan = null }
-
-//        if (mDevice != null) {
-//            try {
-//                mDevice!!.close()
-//                mDevice = null
-//            } catch (e: IOException) {
-//                Log.w(TAG, "Unable to close I2C device", e)
-//            }
-//        }
     }
+
+    private fun scanI2cDevices() {
+        Log.i(TAG, "Scanning I2C devices")
+        PeripheralManager.getInstance().scanI2cAvailableAddresses(I2C_PIN_NAME)
+                .map { String.format(Locale.US, "0x%02X", it) }
+                .forEach { address -> Log.i(TAG, "Found: $address") }
+    }
+
+    private fun wait1sec() = Thread.sleep(5000)
 }
-
-
