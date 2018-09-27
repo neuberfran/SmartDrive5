@@ -7,6 +7,8 @@ import com.google.android.things.pio.I2cDevice
 import com.google.android.things.pio.PeripheralManager;
 import java.io.File
 import java.io.IOException
+import java.lang.reflect.Array.get
+import java.lang.reflect.Array.set
 
 class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
 
@@ -46,7 +48,7 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
     }
 
     enum class MotorNumber(val i2cValue: Int) {
-        One(40), Two(90), Both(110);
+        One(40), Two(90);
 
         companion object {
             fun fromValue(i2cValue: Int) = MotorNumber.values().firstOrNull { it.i2cValue == i2cValue } ?: Two
@@ -54,10 +56,18 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
     }
 
     enum class Direction(val i2cValue: Int) {
-        Right(40), Left(90), Stopm(110);
+        Right(40), Left(90);
 
         companion object {
             fun fromValue(i2cValue: Int) = Direction.values().firstOrNull { it.i2cValue == i2cValue } ?: Right
+        }
+    }
+
+    enum class StopOrNot(val i2cValue: Int) {
+        No(40), Yes(90);
+
+        companion object {
+            fun fromValue(i2cValue: Int) :StopOrNot = StopOrNot.values().firstOrNull { it.i2cValue == i2cValue } ?: No
         }
     }
 
@@ -77,11 +87,12 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
 
     set(value) {
 
-        val buffer = byteArrayOf(0x4E, 128.toByte(), 0x05, 0x00, 0xD1.toByte())
-
-        device?.write(buffer, buffer.size)
-
-     }
+        if (motornumber == MotorNumber.One) {
+             var SmartDrive_Motor = 0x46
+        }else{
+             var SmartDrive_Motor = 0x4E
+        }
+    }
 
     var direction: Direction
 
@@ -89,7 +100,25 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
 
         set(value) {
 
-            device?.writeRegByte(COMMAND_SPEED, value.i2cValue.toByte())
+            if (direction == Direction.Right) {
+                var Direction = 128.toByte()
+            } else {
+                var Direction = 129.toByte()
+            }
+        }
+
+    var stopornot: StopOrNot
+
+        get() = StopOrNot.fromValue(device?.readRegByte(COMMAND_SPEED)?.toPositiveInt() ?: 0)
+
+        set(value) {
+
+            while (stopornot == StopOrNot.No) {
+
+                var buffer = byteArrayOf(SmartDrive_Motor, Direction, 0x05, 0x00, 0xD1.toByte())
+
+                device?.write(buffer, buffer.size)
+            }
         }
 
     override fun close() {

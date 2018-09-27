@@ -1,12 +1,13 @@
 package com.example.neube.smartdrive.device
 
 import android.app.Activity
+import android.icu.text.RelativeDateTimeFormatter
 import android.os.Bundle
 import android.util.Log
 import com.example.neube.smartdrive.device.components.SmartDriveDriver
-import com.example.neube.smartdrive.device.components.SmartDriveDriver.MotorNumber
 import com.google.android.things.pio.PeripheralManager
 import com.example.neube.smartdrive.core.ext.scanI2cAvailableAddresses
+import com.example.neube.smartdrive.device.components.SmartDriveDriver.*
 import java.util.*
 
 class MainActivity : Activity() {
@@ -37,7 +38,9 @@ class MainActivity : Activity() {
 
         fan?.let { fan ->
             fan.start()
-            fan.motornumber.direction  = MotorNumber.Two.Direction.Right
+            fan.motornumber = MotorNumber.Two
+            fan.direction =   Direction.Right
+            fan.stopornot =   StopOrNot.No
             Log.i(TAG, "Speed: ${fan.motornumber}")
             wait1sec()
       //     fan.stop()
