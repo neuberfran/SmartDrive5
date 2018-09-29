@@ -1,16 +1,14 @@
 package com.example.neube.smartdrive.device.components
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import com.example.neube.smartdrive.core.ext.toPositiveInt
 import com.google.android.things.pio.I2cDevice
 import com.google.android.things.pio.PeripheralManager;
-import java.io.File
-import java.io.IOException
-import java.lang.reflect.Array.get
-import java.lang.reflect.Array.set
 
 class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
+
+     var SmartDrive_Motor: Byte = 0
+
+ //    var Direction: Byte = 0
 
     companion object {
 
@@ -48,7 +46,7 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
     }
 
     enum class MotorNumber(val i2cValue: Int) {
-        One(40), Two(90);
+        One(0x46), Two(0x4E);
 
         companion object {
             fun fromValue(i2cValue: Int) = MotorNumber.values().firstOrNull { it.i2cValue == i2cValue } ?: Two
@@ -56,18 +54,18 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
     }
 
     enum class Direction(val i2cValue: Int) {
-        Right(40), Left(90);
+        Right(128), Left(129);
 
         companion object {
             fun fromValue(i2cValue: Int) = Direction.values().firstOrNull { it.i2cValue == i2cValue } ?: Right
         }
     }
 
-    enum class StopOrNot(val i2cValue: Int) {
-        No(40), Yes(90);
+    enum class StopOrNot(val i2cValue: Boolean) {
+        No( false), Yes(true);
 
         companion object {
-            fun fromValue(i2cValue: Int) :StopOrNot = StopOrNot.values().firstOrNull { it.i2cValue == i2cValue } ?: No
+            fun fromValue(i2cValue: Boolean) :StopOrNot = StopOrNot.values().firstOrNull { it.i2cValue == i2cValue } ?: No
         }
     }
 
@@ -85,13 +83,14 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
 
     get() = MotorNumber.fromValue(device?.readRegByte(COMMAND_SPEED)?.toPositiveInt() ?: 0)
 
+
     set(value) {
 
-        if (motornumber == MotorNumber.One) {
-             var SmartDrive_Motor = 0x46
-        }else{
-             var SmartDrive_Motor = 0x4E
-        }
+//        if (motornumber == MotorNumber.One) {
+//             var SmartDrive_Motor = 0x46
+//        }else{
+//             var SmartDrive_Motor = 0x4E
+//        }
     }
 
     var direction: Direction
@@ -100,16 +99,16 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
 
         set(value) {
 
-            if (direction == Direction.Right) {
-                var Direction = 128.toByte()
-            } else {
-                var Direction = 129.toByte()
-            }
+//            if (direction == Direction.Right) {
+//                var Direction = 128.toByte()
+//            } else {
+//                var Direction = 129.toByte()
+//            }
         }
 
     var stopornot: StopOrNot
 
-        get() = StopOrNot.fromValue(device?.readRegByte(COMMAND_SPEED)?.toPositiveInt() ?: 0)
+       get() = StopOrNot.fromValue(device?.readRegByte(COMMAND_SPEED)?.toPositiveInt() ?: 0)
 
         set(value) {
 
