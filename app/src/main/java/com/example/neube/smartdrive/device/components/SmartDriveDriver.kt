@@ -108,13 +108,13 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
 
     var stopornot: StopOrNot
 
-       get() = StopOrNot.fromValue(device?.readRegByte(COMMAND_SPEED)?.toPositiveInt() ?: 0)
+       get() = StopOrNot.fromValue(device?.Boolean(StopOrNot.No)?.toSTOPorNOT() ?: 0)
 
         set(value) {
 
             while (stopornot == StopOrNot.No) {
 
-                var buffer = byteArrayOf(SmartDrive_Motor, Direction, 0x05, 0x00, 0xD1.toByte())
+                var buffer = byteArrayOf(SmartDrive_Motor, Direction.toByte(), 0x05, 0x00, 0xD1.toByte())
 
                 device?.write(buffer, buffer.size)
             }
