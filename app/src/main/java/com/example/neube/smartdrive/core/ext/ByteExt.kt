@@ -6,4 +6,4 @@ fun Byte.toPositiveInt() = toInt() and 0xFF
 
 
 
-fun Boolean.toSTOPorNOT():Boolean = SmartDriveDriver.StopOrNot.No and SmartDriveDriver.StopOrNot.Yes
+fun Boolean.toSTOPorNOT():Boolean = true and false

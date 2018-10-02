@@ -37,7 +37,7 @@ class MainActivity : Activity() {
         super.onResume()
 
         fan?.let { fan ->
-            fan.start()
+      //      fan.start()
             fan.motornumber = MotorNumber.Two
             fan.direction =   Direction.Right
             fan.stopornot =   StopOrNot.No
@@ -46,7 +46,7 @@ class MainActivity : Activity() {
       //     fan.stop()
         }
 
-        fan!!.stop()
+   //     fan!!.stop()
     }
 
     override fun onDestroy() {

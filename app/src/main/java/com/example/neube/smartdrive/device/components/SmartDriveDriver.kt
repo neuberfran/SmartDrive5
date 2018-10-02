@@ -1,6 +1,7 @@
 package com.example.neube.smartdrive.device.components
 
 import com.example.neube.smartdrive.core.ext.toPositiveInt
+import com.example.neube.smartdrive.core.ext.toSTOPorNOT
 import com.google.android.things.pio.I2cDevice
 import com.google.android.things.pio.PeripheralManager;
 
@@ -8,7 +9,7 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
 
      var SmartDrive_Motor: Byte = 0
 
- //    var Direction: Byte = 0
+  //   var direction =  0
 
     companion object {
 
@@ -45,23 +46,23 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
         private const val CMD_C = 0x43
     }
 
-    enum class MotorNumber(val i2cValue: Int) {
+    enum class MotorNumber(var motorneuber: Byte) {
         One(0x46), Two(0x4E);
 
         companion object {
-            fun fromValue(i2cValue: Int) = MotorNumber.values().firstOrNull { it.i2cValue == i2cValue } ?: Two
+            fun fromValue(motorneuber: Byte) = MotorNumber.values().firstOrNull { it.motorneuber == motorneuber } ?: Two
         }
     }
 
-    enum class Direction(val i2cValue: Int) {
-        Right(128), Left(129);
+    enum class Direction(var direcneuber: Byte) {
+        Right(128.toByte()), Left(129.toByte());
 
         companion object {
-            fun fromValue(i2cValue: Int) = Direction.values().firstOrNull { it.i2cValue == i2cValue } ?: Right
+            fun fromValue(direcneuber: Byte) = Direction.values().firstOrNull { it.direcneuber == direcneuber } ?: Right
         }
     }
 
-    enum class StopOrNot(val i2cValue: Boolean) {
+    enum class StopOrNot(var i2cValue: Boolean) {
         No( false), Yes(true);
 
         companion object {
@@ -79,46 +80,42 @@ class SmartDriveDriver(i2cName: String, i2cAddress: Int) : AutoCloseable {
 
     }
 
-    var motornumber: MotorNumber
+    lateinit var motornumber: MotorNumber
 
-    get() = MotorNumber.fromValue(device?.readRegByte(COMMAND_SPEED)?.toPositiveInt() ?: 0)
+//    get() = MotorNumber.fromValue(device?.readRegByte(COMMAND_SPEED)?.toPositiveInt() ?: 0)
 
 
-    set(value) {
 
-//        if (motornumber == MotorNumber.One) {
-//             var SmartDrive_Motor = 0x46
-//        }else{
-//             var SmartDrive_Motor = 0x4E
-//        }
-    }
 
-    var direction: Direction
+    lateinit var direction: Direction
 
-        get() = Direction.fromValue(device?.readRegByte(COMMAND_SPEED)?.toPositiveInt() ?: 0)
+ //       get() = Direction.fromValue(device?.readRegByte(COMMAND_SPEED)?.toPositiveInt() ?: 0)
 
-        set(value) {
-
+//        set(value) {
+//
 //            if (direction == Direction.Right) {
 //                var Direction = 128.toByte()
 //            } else {
 //                var Direction = 129.toByte()
 //            }
-        }
+//        }
 
-    var stopornot: StopOrNot
+    lateinit var stopornot: StopOrNot
 
-       get() = StopOrNot.fromValue(device?.Boolean(StopOrNot.No)?.toSTOPorNOT() ?: 0)
+     //  get() = StopOrNot.fromValue(device?.equals(StopOrNot.No)?.toSTOPorNOT() ?: false)
 
-        set(value) {
+   //     set(value) {
 
             while (stopornot == StopOrNot.No) {
 
-                var buffer = byteArrayOf(SmartDrive_Motor, Direction.toByte(), 0x05, 0x00, 0xD1.toByte())
+                var SmartDrive_Motor=MotorNumber.Two.motorneuber
+                var Direction = Direction.Right.direcneuber
+
+                var buffer = byteArrayOf(SmartDrive_Motor, Direction, 0x05, 0x00, 0xD1.toByte())
 
                 device?.write(buffer, buffer.size)
             }
-        }
+ //       }
 
     override fun close() {
         device?.close().also { device = null }
