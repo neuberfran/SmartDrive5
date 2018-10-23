@@ -15,8 +15,12 @@
       },
       "oauth_client": [
         {
-          "client_id": "682274557494-ebugf313lgn702dg368blammukg7okvh.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "682274557494-f2rt5eiaifab9fo66tv00snm4oo2p84k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.neube.smartdrive",
+            "certificate_hash": "ba8e727e6536639a687cf8f478e51e110a8808ac"
+          }
         },
         {
           "client_id": "682274557494-ebugf313lgn702dg368blammukg7okvh.apps.googleusercontent.com",
@@ -33,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "682274557494-ebugf313lgn702dg368blammukg7okvh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

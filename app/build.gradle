@@ -31,10 +31,17 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:support-v4:27.1.0'
+    implementation 'com.google.firebase:firebase-database:11.8.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compileOnly 'com.google.android.things:androidthings:1.0'
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    implementation('com.github.b3er.rxfirebase:firebase-database-kotlin:11.2.0') {
+        transitive = false
+    }
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
 }
+
+apply plugin: 'com.google.gms.google-services'
