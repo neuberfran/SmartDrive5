@@ -1,6 +1,7 @@
 package com.example.neube.smartdrive
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.icu.text.Normalizer.NO
 import android.icu.text.RelativeDateTimeFormatter
@@ -63,17 +64,18 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         scanI2cDevices()
 
-        var modoComFirebase = ModoComFirebase()
+       Log.i(ContentValues.TAG, "Volto 100.00")
+
+        val modoComFirebase = ModoComFirebase()
         modoComFirebase.getDataInit()
 
-   //     getDataInit()
+       Log.i(ContentValues.TAG, "Volto 102.00")
 
+   //     getDataInit()
 
     }
 
     // Clean
-
-
 
     @Throws(IOException::class)
     fun CleanRegisters(device: I2cDevice, address: Int) {
@@ -81,8 +83,6 @@ class MainActivity : Activity() {
        device.writeRegByte(SmartDrive_COMMAND, CMD_S.toByte())
     //    device.writeRegByte(address, limpa)
     }
-
-
 
     public fun getDataInit() {
 
@@ -196,7 +196,12 @@ class MainActivity : Activity() {
 
     override fun onDestroy() {
         super.onDestroy()
- //       fan?.close().also { fan = null }
+
+        FCMotorUmA!!.close()
+        FCMotorUmB!!.close()
+        FCMotorDoisA!!.close()
+        FCMotorDoisB!!.close()
+
     }
 
     private fun scanI2cDevices() {

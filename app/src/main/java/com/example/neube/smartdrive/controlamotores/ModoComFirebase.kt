@@ -21,8 +21,11 @@ import com.google.android.things.pio.Gpio
 import java.io.IOException
 
 class ModoComFirebase(): AutoCloseable {
+    override fun close() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
-      private var TAG = ModoComFirebase::class.simpleName!!
+    private var TAG = ModoComFirebase::class.simpleName!!
 
       private var mButtonInputDriver: ButtonInputDriver? = null
 
@@ -57,37 +60,48 @@ class ModoComFirebase(): AutoCloseable {
 
     public fun getDataInit() {
 
-     var dataListener = object : ValueEventListener {
+        var dataListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                 Log.i(TAG, "Configuring GPIO pins")
 
                 Log.i(TAG, "Configuring GPIO pins")
 
-                var pioService = PeripheralManager.getInstance()
-                var portList = pioService.gpioList
 
-                mLedGpio = pioService.openGpio(BoardDefaults.getGPIOForButton15())
-                mLedGpio!!.setDirection(Gpio.DIRECTION_IN)
-                mLedGpio!!.setActiveType(Gpio.ACTIVE_LOW)
+//                var pioService = PeripheralManager.getInstance()
+//                var portList = pioService.gpioList
+//
+//                mLedGpio = pioService.openGpio(BoardDefaults.getGPIOForButton15())
+//                mLedGpio!!.setDirection(Gpio.DIRECTION_IN)
+//                mLedGpio!!.setActiveType(Gpio.ACTIVE_LOW)
 
 
-                var mDatabase = FirebaseDatabase.getInstance()
-                var fcmotordoisa = mDatabase.getReference("fcmotordoisa")
-                var fcmotordoisb = mDatabase.getReference("fcmotordoisb")
-                var fcmotoruma   = mDatabase.getReference("fcmotoruma")
-                var fcmotorumb   = mDatabase.getReference("fcmotorumb")
+                /// look to /// =
+// /               var mDatabase = FirebaseDatabase.getInstance()
+
+                val database = FirebaseDatabase.getInstance()
+                val myRef = database.getReference()
+
+                val fcmotoruma   = myRef.child("fcmotoruma")
+                val fcmotorumb   = myRef.child("fcmotorumb")
+                val fcmotordoisa = myRef.child("fcmotordoisa")
+                val fcmotorboisb = myRef.child("fcmotordoisb")
+
+//  /              var fcmotordoisa = mDatabase.getReference("fcmotordoisa")
+//  /              var fcmotordoisb = mDatabase.getReference("fcmotordoisb")
+//  /              var fcmotoruma   = mDatabase.getReference("fcmotoruma")
+//  /              var fcmotorumb   = mDatabase.getReference("fcmotorumb")
 
 
                 Log.i(TAG, "Volto 44.11......")
 
-                Log.i(TAG, "Volto 44---1 ${mLedGpio!!.value}")
+                //          Log.i(TAG, "Volto 44---1 ${mLedGpio!!.value}")
 
                 try {
 
-                    FCMotorUmA = Button(BoardDefaults.getGPIOForButton18(),
+                    FCMotorUmA = com.google.android.things.contrib.driver.button.Button(BoardDefaults.getGPIOForButton18(),
                             //       mButton = Button(BUTTON_GPIO_PIN,
-                            Button.LogicState.PRESSED_WHEN_LOW)
+                            com.google.android.things.contrib.driver.button.Button.LogicState.PRESSED_WHEN_LOW)
 
                     FCMotorUmA!!.setOnButtonEventListener { button, pressed ->
 
@@ -113,9 +127,9 @@ class ModoComFirebase(): AutoCloseable {
 
                 try {
 
-                    FCMotorUmB = Button(BoardDefaults.getGPIOForButton21(),
+                    FCMotorUmB = com.google.android.things.contrib.driver.button.Button(BoardDefaults.getGPIOForButton21(),
                             //       mButton = Button(BUTTON_GPIO_PIN,
-                            Button.LogicState.PRESSED_WHEN_LOW)
+                            com.google.android.things.contrib.driver.button.Button.LogicState.PRESSED_WHEN_LOW)
 
                     FCMotorUmB!!.setOnButtonEventListener { button, pressed ->
 

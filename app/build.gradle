@@ -39,7 +39,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     implementation 'com.google.android.things.contrib:driver-button:1.0'
 
-
     implementation('com.github.b3er.rxfirebase:firebase-database-kotlin:11.2.0') {
         transitive = false
     }

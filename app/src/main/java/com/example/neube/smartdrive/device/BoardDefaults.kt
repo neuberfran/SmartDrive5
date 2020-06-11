@@ -15,9 +15,9 @@ object BoardDefaults {
 
     }
 
-    fun getGPIOForLED(): String {
+    fun getGPIOForLED20(): String {
         when (boardVariant) {
-            DEVICE_RPI3 -> return "BCM18"
+            DEVICE_RPI3 -> return "BCM20"
             DEVICE_IMX7D_PICO -> return "GPIO2_IO03"
             else -> throw IllegalStateException("Unknown Build.DEVICE " + Build.DEVICE)
         }
@@ -55,6 +55,16 @@ object BoardDefaults {
             else -> throw IllegalStateException("Unknown Build.DEVICE " + Build.DEVICE)
         }
     }
+
+
+    fun getGPIOForButton04(): String {
+        when (boardVariant) {
+            DEVICE_RPI3 -> return "BCM4"
+            DEVICE_IMX7D_PICO -> return "GPIO2_IO03"
+            else -> throw IllegalStateException("Unknown Build.DEVICE " + Build.DEVICE)
+        }
+    }
+
 
     private
 
